@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 
 import usersRoute from "./routes/users.js";
+import productRoute from "./routes/product.js";
 
 const app = express();
 app.use(express.urlencoded({extended: true}))
@@ -22,6 +23,8 @@ mongoose
 
 // Use routes
 app.use("/user", usersRoute);
+app.use("/product", productRoute);
+
 
 // Port
 const PORT = process.env.PORT || 5000;
