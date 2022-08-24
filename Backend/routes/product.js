@@ -1,5 +1,9 @@
 import express from "express";
 import product from "../models/product.js";
+import User from "../models/user.js";
+import Product from "../models/product.js";
+
+import { authorizedUser } from "../auth/auth.js";
 
 const router = express.Router();
 //add product
@@ -16,6 +20,7 @@ router.post("/add", async (req, res) => {
 })
 
 router.get("/productList", async (req, res) => {
+
     try {
         const productList = await product.find({},{ name: 1 ,price : 1});
         res.status(200).json({
@@ -26,7 +31,23 @@ router.get("/productList", async (req, res) => {
     }
 })
 
-//add to cart route 
+//add to cart after authorization
+router.post("/addToCart/:productId", authorizedUser , async (req, res) => {
+    try {
+    const userID = req.user;
+    const user = await User.findById({ _id: userID });
+    const product = await Product.findById({ _id: req.params.productId });
+    user.cart.push(product);
+    await user.save();
+    res.status(200).json({
+       user
+    });
+    }
+    catch(error){
+        res.status(500).json({ message: error.message });
+    }
+})
+
 
 
 

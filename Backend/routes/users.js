@@ -2,7 +2,7 @@ import express from "express";
 import User from "../models/user.js";
 import { comparePassword } from "../auth/auth.js";
 import { hashPassword } from "../auth/auth.js";
-
+import jwt from "jsonwebtoken";
 const router = express.Router();
 
 router.get("/login");
@@ -26,8 +26,13 @@ router.post("/login", async (req, res) => {
                 .then((response) => {
                     // If password is correct
                     if (response) {
+                        const token = jwt.sign(
+                            { id: user._id },
+                            "this is the secret key"
+                        );
 
                         res.status(200).json({
+                            token,
                             user: {
                                 id: user._id,
                                 email: user.email,
